@@ -1,18 +1,17 @@
-// src/components/CartModal.jsx
 import React, { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 
-const CartModal = ({ onClose }) => {
-  const { cartItems, removeFromCart, moveToSaveForLater } = useContext(CartContext);
+const SaveForLaterModal = ({ onClose }) => {
+  const { saveForLaterItems, moveBackToCart, removeFromSaveForLater } = useContext(CartContext);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg w-[400px] max-h-[80vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">Cart</h2>
-        {cartItems.length === 0 ? (
-          <p>Your cart is empty.</p>
+        <h2 className="text-xl font-bold mb-4">Save for Later</h2>
+        {saveForLaterItems.length === 0 ? (
+          <p>No items saved for later.</p>
         ) : (
-          cartItems.map((item) => (
+          saveForLaterItems.map((item) => (
             <div key={item.id} className="border-b py-2 flex justify-between items-center">
               <div>
                 <p className="font-semibold">{item.name}</p>
@@ -20,13 +19,13 @@ const CartModal = ({ onClose }) => {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => moveToSaveForLater(item)}
-                  className="bg-yellow-400 text-white px-2 py-1 rounded"
+                  onClick={() => moveBackToCart(item)}
+                  className="bg-green-500 text-white px-2 py-1 rounded"
                 >
-                  Save for Later
+                  Move to Cart
                 </button>
                 <button
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() => removeFromSaveForLater(item.id)}
                   className="bg-red-500 text-white px-2 py-1 rounded"
                 >
                   Remove
@@ -45,4 +44,4 @@ const CartModal = ({ onClose }) => {
   );
 };
 
-export default CartModal;
+export default SaveForLaterModal;
