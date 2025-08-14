@@ -23,12 +23,12 @@ export default function Products({ products, onViewDetails, onAddToCart }) {
           placeholder="Search..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border rounded px-2 py-1 w-40"
+          className="border p-2 rounded w-32" // reduced from w-full
         />
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="border rounded px-2 py-1 w-40"
+          className="border p-2 rounded w-32 ml-2"
         >
           <option value="">Sort by</option>
           <option value="priceLow">Price: Low to High</option>

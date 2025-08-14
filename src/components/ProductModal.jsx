@@ -26,8 +26,11 @@ export default function ProductModal({ product, onClose, onAddToCart }) {
 
         {/* Add to Cart button at bottom */}
         <button
-          onClick={() => onAddToCart(product)}
-          className="mt-6 w-full bg-yellow-500 hover:bg-yellow-400 text-black py-2 rounded"
+          className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
+          onClick={() => {
+            addToCart(product);
+            alert("Item added to cart!");
+          }}
         >
           Add to Cart
         </button>
