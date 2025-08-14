@@ -1,47 +1,58 @@
-export default function Footer(){
+import React from "react";
+import { FaFacebookF, FaInstagram, FaTwitter, FaWhatsapp, FaYoutube } from "react-icons/fa";
+
+export default function Footer() {
   return (
-    <footer className="mt-10 border-t border-border bg-card">
-      <div className="container mx-auto px-4 py-10 grid md:grid-cols-4 gap-8">
+    <footer className="bg-gray-900 text-white py-6">
+      <div className="container mx-auto px-4 grid md:grid-cols-4 gap-8 text-sm">
+        
+        {/* About Us */}
         <div>
-          <h3 className="text-lg font-semibold mb-3">About Us</h3>
-          <p className="text-sm text-muted">
-            ShopSmart curates premium goods with a luxe aesthetic and modern service.
+          <h3 className="text-lg font-semibold mb-2">About Us</h3>
+          <p className="text-gray-400">
+            ShopSmart is your premium online store offering a luxury and modern shopping experience.
           </p>
         </div>
+
+        {/* Stay Updated */}
         <div>
-          <h3 className="text-lg font-semibold mb-3">Contact Us</h3>
-          <p className="text-sm">Email: hello@shopsmart.store</p>
-          <p className="text-sm">Phone: +91-99999-00000</p>
-          <p className="text-sm">Location: Bengaluru, IN</p>
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold mb-3">Subscribe</h3>
-          <div className="flex gap-2">
-            <input className="input" placeholder="Email address" />
-            <button className="btn">Subscribe</button>
-          </div>
-          <div className="mt-4">
-            <h4 className="font-medium">Feedback</h4>
-            <form className="mt-2 grid gap-2">
-              <input className="input" placeholder="Name" />
-              <input className="input" placeholder="Email" />
-              <textarea className="input" rows="3" placeholder="Message"></textarea>
-              <button className="btn w-fit">Send</button>
-            </form>
+          <h3 className="text-lg font-semibold mb-2">Stay Updated</h3>
+          <div className="flex">
+            <input
+              type="email"
+              placeholder="Your email"
+              className="px-2 py-1 rounded-l bg-gray-800 text-white outline-none"
+            />
+            <button className="px-3 py-1 bg-yellow-500 text-black rounded-r hover:bg-yellow-400">
+              Subscribe
+            </button>
           </div>
         </div>
+
+        {/* Contact */}
         <div>
-          <h3 className="text-lg font-semibold mb-3">Follow</h3>
-          <div className="flex gap-3 text-sm">
-            <a className="btn-outline px-3 py-1 rounded-lg" href="#" target="_blank">Facebook</a>
-            <a className="btn-outline px-3 py-1 rounded-lg" href="#" target="_blank">Instagram</a>
-            <a className="btn-outline px-3 py-1 rounded-lg" href="#" target="_blank">Twitter</a>
+          <h3 className="text-lg font-semibold mb-2">Contact Us</h3>
+          <p>Email: info@shopsmart.com</p>
+          <p>Phone: +1 234 567 890</p>
+          <p>Location: Placeholder City</p>
+        </div>
+
+        {/* Social Links */}
+        <div>
+          <h3 className="text-lg font-semibold mb-2">Follow Us</h3>
+          <div className="flex space-x-3 text-xl">
+            <a href="#" className="hover:text-yellow-400"><FaFacebookF /></a>
+            <a href="#" className="hover:text-yellow-400"><FaInstagram /></a>
+            <a href="#" className="hover:text-yellow-400"><FaTwitter /></a>
+            <a href="#" className="hover:text-yellow-400"><FaWhatsapp /></a>
+            <a href="#" className="hover:text-yellow-400"><FaYoutube /></a>
           </div>
         </div>
       </div>
-      <div className="border-t border-border text-center text-sm py-3">
+
+      <div className="mt-6 text-center text-gray-500 text-xs">
         © {new Date().getFullYear()} ShopSmart. All rights reserved.
       </div>
     </footer>
-  )
+  );
 }
