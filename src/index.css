@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #ffffff;
+  --card: #f8fafc;
+  --text: #0f172a;
+  --muted: #64748b;
+  --primary: #2563eb;
+  --primary-text: #ffffff;
+  --accent: #22c55e;
+  --border: #e2e8f0;
+}
+
+/* Bright theme */
+html[data-theme='bright'] {
+  --bg: #ffffff;
+  --card: #f8fafc;
+  --text: #0f172a;
+  --muted: #475569;
+  --primary: #2563eb;
+  --primary-text: #ffffff;
+  --accent: #22c55e;
+  --border: #e2e8f0;
+}
+
+/* Luxury theme */
+html[data-theme='luxury'] {
+  --bg: #0b0e14;
+  --card: #111827;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --primary: #d4af37; /* gold */
+  --primary-text: #0b0e14;
+  --accent: #b88a2e;
+  --border: #1f2937;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-2xl px-4 py-2 font-medium shadow-soft border border-border transition hover:shadow-deep;
+  background: var(--primary);
+  color: var(--primary-text);
+}
+.btn-outline {
+  @apply inline-flex items-center justify-center rounded-2xl px-4 py-2 font-medium shadow-soft border transition hover:shadow-deep;
+  color: var(--text);
+  background: transparent;
+  border-color: var(--border);
+}
+.card {
+  @apply rounded-2xl shadow-soft border border-border bg-card;
+}
+.input {
+  @apply w-full rounded-xl border border-border bg-bg px-3 py-2 outline-none focus:ring-2;
+}

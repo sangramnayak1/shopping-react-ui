@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  frontend:
+    build: .
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+  # Placeholder backend for Spring Boot (to be replaced with your actual image)
+  backend:
+    image: ghcr.io/spring-projects/spring-petclinic-rest:latest
+    # Replace with your own later. Exposes 9966 by default in this demo.
+    ports:
+      - "9966:9966"
