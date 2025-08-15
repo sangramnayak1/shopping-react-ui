@@ -1,65 +1,44 @@
-// src/pages/Profile.jsx
-import React, { useState, useEffect } from "react";
+import { useState } from 'react'
 
-const Profile = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function Profile(){
+  const stored = JSON.parse(localStorage.getItem('profile') || '{}')
+  const [form, setForm] = useState({
+    name: stored.name || '',
+    username: stored.username || '',
+    dob: stored.dob || '',
+    mobile: stored.mobile || '',
+    email: stored.email || '',
+    homeAddress: stored.homeAddress || '',
+    otherAddress: stored.otherAddress || '',
+    password: ''
+  })
 
-  // Mock: Load user data (replace with API)
-  useEffect(() => {
-    const userData = {
-      name: "John Doe",
-      email: "john@example.com"
-    };
-    setName(userData.name);
-    setEmail(userData.email);
-  }, []);
-
-  const handleUpdate = (e) => {
-    e.preventDefault();
-    // Replace with API call
-    console.log("Updated profile:", { name, email, password });
-    alert("Profile updated!");
-  };
+  const onChange = (e) => setForm(prev => ({...prev, [e.target.name]: e.target.value}))
+  const onSave = (e) => {
+    e.preventDefault()
+    localStorage.setItem('profile', JSON.stringify({...form, password: undefined}))
+    alert('Profile saved')
+  }
 
   return (
-    <div className="p-8 max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-6">My Profile</h2>
-      <form onSubmit={handleUpdate} className="space-y-4">
-        <div>
-          <label className="block mb-1 font-semibold">Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="border p-2 rounded w-full"
-          />
+    <section className="my-6">
+      <form className="card p-6 grid md:grid-cols-2 gap-4" onSubmit={onSave}>
+        <h2 className="md:col-span-2 text-xl font-semibold">Account</h2>
+        <input className="input" name="name" placeholder="Name" value={form.name} onChange={onChange} required />
+        <input className="input" name="username" placeholder="Username" value={form.username} onChange={onChange} required />
+        <input className="input" type="date" name="dob" placeholder="DOB" value={form.dob} onChange={onChange} />
+        <input className="input" name="mobile" placeholder="Mobile" value={form.mobile} onChange={onChange} />
+        <input className="input" type="email" name="email" placeholder="Email" value={form.email} onChange={onChange} required />
+        <input className="input md:col-span-2" name="homeAddress" placeholder="Home Address" value={form.homeAddress} onChange={onChange} />
+        <input className="input md:col-span-2" name="otherAddress" placeholder="Other Address" value={form.otherAddress} onChange={onChange} />
+        <div className="md:col-span-2">
+          <label className="text-sm text-muted">Reset Password</label>
+          <input className="input mt-1" type="password" name="password" placeholder="New Password" value={form.password} onChange={onChange} />
         </div>
-        <div>
-          <label className="block mb-1 font-semibold">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border p-2 rounded w-full"
-          />
+        <div className="md:col-span-2 flex justify-end gap-2">
+          <button className="btn">Save</button>
         </div>
-        <div>
-          <label className="block mb-1 font-semibold">New Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 rounded w-full"
-          />
-        </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-          Update Profile
-        </button>
       </form>
-    </div>
-  );
-};
-
-export default Profile;
+    </section>
+  )
+}

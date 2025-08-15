@@ -1,48 +1,41 @@
-// src/components/CartModal.jsx
-import React, { useContext } from "react";
-import { CartContext } from "../context/CartContext";
+import { X } from 'lucide-react'
+import { useCart } from '../contexts/CartContext.jsx'
 
-const CartModal = ({ onClose }) => {
-  const { cartItems, removeFromCart, moveToSaveForLater } = useContext(CartContext);
+export default function CartModal({ onClose }){
+  const { cart, remove, moveToSaved, clear } = useCart()
+  const total = cart.reduce((a,c)=>a + c.price * c.qty, 0)
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg w-[400px] max-h-[80vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">Cart</h2>
-        {cartItems.length === 0 ? (
-          <p>Your cart is empty.</p>
-        ) : (
-          cartItems.map((item) => (
-            <div key={item.id} className="border-b py-2 flex justify-between items-center">
-              <div>
-                <p className="font-semibold">{item.name}</p>
-                <p>${item.price}</p>
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-bg w-full max-w-3xl rounded-lg border border-border shadow-deep p-4" onClick={e=>e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-3">
+          <div className="text-lg font-semibold">Your Cart</div>
+          <button className="btn-outline p-2 rounded-xl" onClick={onClose}><X size={18}/></button>
+        </div>
+        <div className="divide-y divide-border max-h-[60vh] overflow-auto">
+          {cart.length === 0 && <div className="py-6 text-center text-muted">Cart is empty.</div>}
+          {cart.map(item => (
+            <div key={item.id} className="py-3 flex items-center gap-3">
+              <img src={item.imageUrl?.[0]} className="w-16 h-16 rounded-lg object-cover" />
+              <div className="flex-1">
+                <div className="font-medium">{item.name}</div>
+                <div className="text-sm text-muted">₹{item.price} × {item.qty}</div>
               </div>
               <div className="flex gap-2">
-                <button
-                  onClick={() => moveToSaveForLater(item)}
-                  className="bg-yellow-400 text-white px-2 py-1 rounded"
-                >
-                  Save for Later
-                </button>
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
-                  Remove
-                </button>
+                <button className="btn-outline" onClick={()=>moveToSaved(item)}>Save for Later</button>
+                <button className="btn-outline" onClick={()=>remove(item.id)}>Remove</button>
               </div>
             </div>
-          ))
-        )}
-        <div className="flex justify-end mt-4">
-          <button onClick={onClose} className="bg-gray-500 text-white px-4 py-2 rounded">
-            Close
-          </button>
+          ))}
+        </div>
+        <div className="mt-4 flex justify-between items-center">
+          <div className="font-semibold">Total: ₹{total.toFixed(2)}</div>
+          <div className="flex gap-2">
+            <a href="/checkout" className="btn">Proceed to Checkout</a>
+            <button className="btn-outline" onClick={clear}>Clear</button>
+          </div>
         </div>
       </div>
     </div>
-  );
-};
-
-export default CartModal;
+  )
+}

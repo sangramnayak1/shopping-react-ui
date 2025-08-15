@@ -2,8 +2,8 @@ export default function Filters({ search, setSearch, sort, setSort, flags, setFl
   const toggleFlag = (f) => setFlags(prev => prev.includes(f) ? prev.filter(x=>x!==f) : [...prev, f])
   return (
     <div className="card p-4 grid md:grid-cols-4 gap-4">
-      <input className="input" placeholder="Search products..." value={search} onChange={e=>setSearch(e.target.value)} />
-      <select className="input" value={sort} onChange={e=>setSort(e.target.value)}>
+      <input className="input max-w-xs w-full" placeholder="Search products..." value={search} onChange={e=>setSearch(e.target.value)} />
+      <select className="input max-w-xs w-full" value={sort} onChange={e=>setSort(e.target.value)}>
         <option value="">Sort by</option>
         <option value="price-asc">Price: Low → High</option>
         <option value="price-desc">Price: High → Low</option>
@@ -22,7 +22,7 @@ export default function Filters({ search, setSearch, sort, setSort, flags, setFl
       </div>
       <div className="flex items-center gap-2">
         <label className="text-sm">Price ≤</label>
-        <input type="number" className="input" value={price} onChange={e=>setPrice(e.target.value)} placeholder="Max price" />
+        <input type="number" className="input max-w-xs w-full" value={price} onChange={e=>setPrice(e.target.value)} placeholder="Max price" />
       </div>
     </div>
   )

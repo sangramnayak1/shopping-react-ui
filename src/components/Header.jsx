@@ -1,51 +1,83 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaShoppingCart, FaHeart } from "react-icons/fa";
+import { Link, NavLink } from 'react-router-dom'
+import { ShoppingCart, Heart, User, Sun, Moon } from 'lucide-react'
+import { useCart } from '../contexts/CartContext.jsx'
+import { useWishlist } from '../contexts/WishlistContext.jsx'
+import { useTheme } from '../contexts/ThemeContext.jsx'
+import { useState } from 'react'
+import CartModal from './CartModal.jsx'
+import WishlistModal from './WishlistModal.jsx'
 
-export default function Header({ cartCount, wishlistCount }) {
-  const navigate = useNavigate();
+export default function Header() {
+  const { cart } = useCart()
+  const { wishlist } = useWishlist()
+  const { theme, toggle } = useTheme()
+  const [open, setOpen] = useState(false)
+  const [cartOpen, setCartOpen] = useState(false)
+  const [wishOpen, setWishOpen] = useState(false)
+  const isLoggedIn = !!localStorage.getItem('token')
+
+  const navClass = ({ isActive }) =>
+    'px-3 py-2 rounded-xl transition ' + (isActive ? 'bg-card border border-border' : 'hover:bg-card')
 
   return (
-    <header className="bg-white shadow sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        
-        {/* Logo click → Home */}
-        <div
-          onClick={() => navigate("/")}
-          className="text-2xl font-bold cursor-pointer text-yellow-600"
-        >
-          ShopSmart
-        </div>
-
-        {/* Navigation */}
-        <nav className="hidden md:flex space-x-6 text-gray-700">
-          <Link to="/">Home</Link>
-          <Link to="/products">Products</Link>
-          <Link to="/wishlist">Wishlist</Link>
-          <Link to="/cart">Cart</Link>
-          <Link to="/profile">Profile</Link>
+    <header className="sticky top-0 z-50 bg-bg/80 backdrop-blur border-b border-border">
+      <div className="container mx-auto px-4 py-3 flex items-center gap-4">
+        <Link to="/" className="text-xl font-bold">ShopSmart</Link>
+        <nav className="hidden md:flex gap-2">
+          <NavLink className={navClass} to="/">Home</NavLink>
+          <NavLink className={navClass} to="/products">Products</NavLink>
+          <NavLink className={navClass} to="/partner">Be Partner</NavLink>
+          <NavLink className={navClass} to="/about">About Us</NavLink>
+          <NavLink className={navClass} to="/profile">Profile</NavLink>
         </nav>
-
-        {/* Icons */}
-        <div className="flex items-center space-x-4">
-          <div className="relative cursor-pointer" onClick={() => navigate("/wishlist")}>
-            <FaHeart className="text-xl" />
-            {wishlistCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">
-                {wishlistCount}
+        <div className="ml-auto flex items-center gap-3">
+          <button className="btn-outline p-2 rounded-xl" onClick={toggle} aria-label="Toggle theme">
+            {theme === 'bright' ? <Moon size={18}/> : <Sun size={18}/>}
+          </button>
+          <button onClick={()=>setWishOpen(true)} className="relative btn-outline p-2 rounded-xl" aria-label="Wishlist">
+            <Heart size={18} />
+            {wishlist.length > 0 && (
+              <span className="absolute -top-2 -right-2 text-xs bg-primary text-primaryText px-1.5 py-0.5 rounded-full">
+                {wishlist.length}
               </span>
             )}
-          </div>
-          <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>
-            <FaShoppingCart className="text-xl" />
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full px-1 text-xs">
-                {cartCount}
+          </button>
+          <button onClick={()=>setCartOpen(true)} className="relative btn-outline p-2 rounded-xl" aria-label="Cart">
+            <ShoppingCart size={18} />
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 text-xs bg-primary text-primaryText px-1.5 py-0.5 rounded-full">
+                {cart.reduce((a,c)=>a+c.qty,0)}
               </span>
+            )}
+          </button>
+
+          <div className="relative">
+            <button className="btn-outline gap-2" onClick={()=>setOpen(v=>!v)}>
+              <User size={18}/>
+              Account
+            </button>
+            {open && (
+              <div className="absolute right-0 mt-2 w-44 card p-2">
+                {!isLoggedIn ? (
+                  <div className="flex flex-col">
+                    <Link className="px-3 py-2 hover:bg-bg rounded-lg" to="/profile" onClick={()=>setOpen(false)}>Login</Link>
+                    <Link className="px-3 py-2 hover:bg-bg rounded-lg" to="/profile" onClick={()=>setOpen(false)}>Register</Link>
+                  </div>
+                ) : (
+                  <div className="flex flex-col">
+                    <Link className="px-3 py-2 hover:bg-bg rounded-lg" to="/profile" onClick={()=>setOpen(false)}>Profile</Link>
+                    <Link className="px-3 py-2 hover:bg-bg rounded-lg" to="/logout" onClick={()=>setOpen(false)}>Logout</Link>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>
       </div>
+    
+      {cartOpen && <CartModal onClose={()=>setCartOpen(false)} />}
+      {wishOpen && <WishlistModal onClose={()=>setWishOpen(false)} />}
+    
     </header>
-  );
+  )
 }
