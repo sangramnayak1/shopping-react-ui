@@ -13,6 +13,9 @@ import Partner from './pages/Partner.jsx'
 import Register from './pages/Register.jsx'
 import SaveForLater from './pages/SaveForLater.jsx'
 import Logout from './pages/Logout.jsx'
+import Login from './pages/Login.jsx'
+import Complaints from './pages/Complaints.jsx'
+import PaymentMode from './pages/PaymentMode'
 
 export default function App() {
   return (
@@ -33,6 +36,8 @@ export default function App() {
           <Route path="/save-for-later" element={<SaveForLater/>} />
           <Route path="/about" element={<About/>} />
           <Route path="/partner" element={<Partner/>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/complaints" element={<Complaints />} />
         </Routes>
       </main>
       <Footer />
