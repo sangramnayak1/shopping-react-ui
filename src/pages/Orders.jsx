@@ -3,33 +3,54 @@ import { useLocation } from 'react-router-dom';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
+  const [toast, setToast] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('orders') || '[]');
     setOrders(stored);
-  }, []);
+
+    if (location.state?.paymentStatus) {
+      setToast({
+        message:
+          location.state.paymentStatus === 'success'
+            ? '✅ Payment successful! Your order has been placed.'
+            : '❌ Payment failed! Please try again.',
+        type: location.state.paymentStatus
+      });
+
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
 
   const formatDate = (iso) => {
     const date = new Date(iso);
     return date.toLocaleString();
   };
 
-  if (!orders.length) {
-    return (
-      <div className="p-8 text-center">
-        <h1 className="text-2xl font-bold mb-4">No Orders Found</h1>
-        <p className="text-gray-600">You haven’t placed any orders yet.</p>
-      </div>
-    );
-  }
-
   return (
-    <section className="max-w-4xl mx-auto my-8">
+    <section className="max-w-4xl mx-auto my-8 relative">
+      {/* Toast / Snackbar with animation */}
+      {toast && (
+        <div
+          className={`fixed top-4 right-4 z-50 px-4 py-2 rounded shadow-lg text-white 
+            transition-all duration-500 ease-in-out transform
+            ${toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'}
+            ${toast ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}
+          `}
+        >
+          {toast.message}
+        </div>
+      )}
+
       <h2 className="text-2xl font-bold mb-4">Your Orders</h2>
 
-      {orders.length === 0 && (
-        <p className="text-gray-600">No orders yet.</p>
+      {!orders.length && (
+        <div className="p-8 text-center">
+          <h1 className="text-2xl font-bold mb-4">No Orders Found</h1>
+          <p className="text-gray-600">You haven’t placed any orders yet.</p>
+        </div>
       )}
 
       <div className="space-y-6">
@@ -56,6 +77,7 @@ export default function Orders() {
             </div>
 
             <p className="text-sm text-gray-700">Order ID: {order.id}</p>
+            <p className="text-sm text-gray-700">Transaction ID: {order.trxnId}</p>
             <p className="text-sm text-gray-700">
               Date: {formatDate(order.date)}
             </p>
@@ -72,7 +94,7 @@ export default function Orders() {
               Amount: ₹{order.amount?.toFixed(2)}
             </p>
             <p className="text-sm text-gray-700">
-              <strong>Payment Method:</strong> {order.paymentMethod || "N/A"}
+              <strong>Payment Method:</strong> {order.paymentMethod || 'N/A'}
             </p>
 
             <div className="mt-3">

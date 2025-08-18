@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { useCart } from '../contexts/CartContext.jsx'
 import { useNavigate } from 'react-router-dom'
+import { v4 as uuidv4 } from 'uuid';
 
 export default function PaymentModal({ isOpen, onClose, paymentMethod, amount, cart = [] }) {
   const navigate = useNavigate()
@@ -77,7 +78,8 @@ export default function PaymentModal({ isOpen, onClose, paymentMethod, amount, c
           setTimeout(() => {
             const orders = JSON.parse(localStorage.getItem('orders') || '[]')
             orders.unshift({
-              id: Date.now(),
+              id: uuidv4(),
+              trxnId: uuidv4(),
               amount: Number(amount),
               status: 'Paid',
               paymentMethod,
@@ -87,7 +89,7 @@ export default function PaymentModal({ isOpen, onClose, paymentMethod, amount, c
             localStorage.setItem('orders', JSON.stringify(orders))
             clear()
             onClose()
-            navigate('/orders')
+            navigate('/orders', { state: { paymentStatus: 'success' } })
           }, 500)
           return 100
         }

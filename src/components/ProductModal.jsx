@@ -1,9 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { useProducts } from '../contexts/ProductContext.jsx'
-import { useState } from 'react'
 
-export default function ProductModal({ product, onClose, onAdd, onWish }){
+export default function ProductModal({ product, onClose, onAdd, onWish }) {
   useEffect(() => {
     const onEsc = e => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onEsc)
@@ -14,23 +13,51 @@ export default function ProductModal({ product, onClose, onAdd, onWish }){
   const next = () => setSlide(s => (s + 1) % product.imageUrl.length)
   const prev = () => setSlide(s => (s - 1 + product.imageUrl.length) % product.imageUrl.length)
 
-  const { addComment } = useProducts()
+  const { addComment, updateComment } = useProducts()
   const [username, setUsername] = useState('')
   const [text, setText] = useState('')
   const [rating, setRating] = useState(5)
+  const [editingIndex, setEditingIndex] = useState(null)
 
   const submit = async (e) => {
     e.preventDefault()
-    if(!username || !text) return
-    await addComment(product.id, { user: username, text, rating: Number(rating) })
-    setUsername(''); setText(''); setRating(5)
+    if (!username.trim()) {
+      alert('Please enter your name')
+      return
+    }
+    if (!text.trim()) {
+      alert('Please enter your comment')
+      return
+    }
+
+    if (editingIndex !== null) {
+      await updateComment(product.id, editingIndex, { user: username, text, rating: Number(rating) })
+      setEditingIndex(null)
+    } else {
+      await addComment(product.id, { user: username, text, rating: Number(rating) })
+    }
+
+    setUsername('')
+    setText('')
+    setRating(5)
+  }
+
+  const startEdit = (comment, index) => {
+    setUsername(comment.user)
+    setText(comment.text)
+    setRating(comment.rating)
+    setEditingIndex(index)
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
       <div className="relative bg-bg max-w-4xl w-full mx-4 rounded-2xl shadow-deep border border-border grid md:grid-cols-2">
-        <button className="absolute right-2 top-2 btn-outline p-2 rounded-xl" onClick={onClose}><X size={18}/></button>
+        <button className="absolute right-2 top-2 btn-outline p-2 rounded-xl" onClick={onClose}>
+          <X size={18} />
+        </button>
+
+        {/* Left - Image slider */}
         <div className="relative rounded-l-2xl overflow-hidden">
           <img src={product.imageUrl[slide]} className="w-full h-full object-cover" />
           {product.imageUrl.length > 1 && (
@@ -40,6 +67,8 @@ export default function ProductModal({ product, onClose, onAdd, onWish }){
             </div>
           )}
         </div>
+
+        {/* Right - Details & Comments */}
         <div className="p-4 md:p-6">
           <h3 className="text-xl font-semibold">{product.name}</h3>
           <div className="text-sm text-muted">{product.category}</div>
@@ -56,22 +85,52 @@ export default function ProductModal({ product, onClose, onAdd, onWish }){
             <div className="space-y-2 max-h-40 overflow-auto pr-2">
               {product.comments?.map((c, i) => (
                 <div key={i} className="border border-border rounded-xl p-2">
-                  <div className="text-sm font-medium">{c.user} <span className="text-xs text-muted">({c.rating}★)</span></div>
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm font-medium">
+                      {c.user} <span className="text-xs text-muted">({c.rating}★)</span>
+                    </div>
+                    <button
+                      className="text-xs text-blue-500 underline"
+                      onClick={() => startEdit(c, i)}
+                    >
+                      Edit
+                    </button>
+                  </div>
                   <div className="text-sm">{c.text}</div>
                 </div>
               ))}
               {!product.comments?.length && <div className="text-sm text-muted">No comments yet.</div>}
             </div>
+
             <form onSubmit={submit} className="mt-3 grid gap-2">
-              <input className="input" placeholder="Your name" value={username} onChange={e=>setUsername(e.target.value)} />
-              <textarea className="input" rows="3" placeholder="Your comment" value={text} onChange={e=>setText(e.target.value)} />
+              <input
+                className="input"
+                placeholder="Your name"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+              />
+              <textarea
+                className="input"
+                rows="3"
+                placeholder="Your comment"
+                value={text}
+                onChange={e => setText(e.target.value)}
+              />
               <div className="flex items-center gap-2">
                 <label className="text-sm">Rating:</label>
-                <select className="input w-24" value={rating} onChange={e=>setRating(e.target.value)}>
-                  {[5,4,3,2,1].map(r => <option key={r} value={r}>{r}</option>)}
+                <select
+                  className="input w-24"
+                  value={rating}
+                  onChange={e => setRating(e.target.value)}
+                >
+                  {[5, 4, 3, 2, 1].map(r => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
                 </select>
               </div>
-              <button className="btn w-fit">Add Comment</button>
+              <button className="btn w-fit">
+                {editingIndex !== null ? 'Update Comment' : 'Add Comment'}
+              </button>
             </form>
           </div>
         </div>

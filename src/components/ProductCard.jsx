@@ -10,7 +10,13 @@ export default function ProductCard({ product }){
 
   return (
     <div className="card overflow-hidden flex flex-col">
-      <button onClick={()=>setOpen(true)} className="relative w-full aspect-[4/3] overflow-hidden">\n        <div className="absolute left-2 top-2 flex gap-2 flex-wrap max-w-[80%]">{product.flags?.slice(0,2).map(f => { const color = f==='Best Seller'?'bg-amber-500 text-black': f==='On Offer'?'bg-green-500 text-white': f==='New Arrival'?'bg-blue-500 text-white': 'bg-purple-500 text-white'; return <span key={f} className={`text-[10px] px-2 py-0.5 rounded-full ${color}`}>{f}</span>})}</div>
+      <button onClick={()=>setOpen(true)} className="relative w-full aspect-[4/3] overflow-hidden">
+        <div className="absolute left-2 top-2 flex gap-2 flex-wrap max-w-[80%]">
+          {product.flags?.map(f => {
+            const color = f==='Best Seller' ? 'bg-red-500 text-white' : f==='On Offer' ? 'bg-amber-500 text-white' : f==='New Arrival' ? 'bg-green-500 text-white' : 'bg-purple-500 text-white';
+            return <span key={f} className={`text-xs px-2 py-0.5 font-bold rounded-full ${color}`}>{f}</span>
+          })}
+        </div>
         <img src={product.imageUrl[0]} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition" />
       </button>
       <div className="p-4 flex-1 flex flex-col">
@@ -23,14 +29,8 @@ export default function ProductCard({ product }){
           <button className="btn flex-1" onClick={()=>addToCart(product,1)}>Add to Cart</button>
           <button className="btn-outline flex-1" onClick={()=>setOpen(true)}>View Details</button>
         </div>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {product.flags?.map(f => {
-  const color = f==='Best Seller' ? 'bg-amber-500 text-black' : f==='On Offer' ? 'bg-green-500 text-white' : f==='New Arrival' ? 'bg-blue-500 text-white' : 'bg-purple-500 text-white';
-  return <span key={f} className={`text-xs px-2 py-0.5 rounded-full ${color}`}>{f}</span>
-})}
-        </div>
       </div>
-      {open && <ProductModal product={product} onClose={()=>setOpen(false)} onAdd={()=>addToCart(product,1)} onWish={()=>addToWishlist(product)} />}
+      {open && <ProductModal product={product} onClose={()=>setOpen(false)} onAdd={()=>addToCart(product,1)} onWish={()=>addToWishlist(product)} />}     
     </div>
   )
 }
